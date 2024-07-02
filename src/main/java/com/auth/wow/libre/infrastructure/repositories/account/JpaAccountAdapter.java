@@ -1,54 +1,46 @@
 package com.auth.wow.libre.infrastructure.repositories.account;
 
-import com.auth.wow.libre.domain.model.Account;
-import com.auth.wow.libre.domain.model.exception.NotFoundException;
-import com.auth.wow.libre.domain.ports.out.account.LoadAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
-import com.auth.wow.libre.domain.ports.out.account.UpdateAccountPort;
+import com.auth.wow.libre.domain.ports.out.account.SaveAccountPort;
 import com.auth.wow.libre.infrastructure.entities.AccountEntity;
-import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
-public class JpaAccountAdapter implements LoadAccountPort, ObtainAccountPort, UpdateAccountPort {
+public class JpaAccountAdapter implements SaveAccountPort, ObtainAccountPort {
 
-  private final AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-  public JpaAccountAdapter(AccountRepository accountRepository) {
-    this.accountRepository = accountRepository;
-  }
-
-  @Override
-  public void create(Account account, AccountWebEntity accountWeb) {
-    accountRepository.save(AccountEntity.fromDomainModel(account, accountWeb));
-  }
-
-  @Override
-  public Account findByUsername(String username) {
-    return accountRepository.findByUsername(username).map(AccountEntity::toDomainModel).orElse(null);
-  }
-
-  @Override
-  public Account update(Account account, String transactionId) {
-
-    Optional<AccountEntity> accountEntity = accountRepository.findByUsername(account.username);
-
-    if (accountEntity.isEmpty()) {
-      throw new NotFoundException("No data associated with this account found", transactionId);
+    public JpaAccountAdapter(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
-    AccountEntity accountUpdate = accountEntity.get();
-    accountUpdate.setEmail(account.email != null ? account.email : accountUpdate.getEmail());
-    accountUpdate.setUsername(account.username != null ? account.username : accountUpdate.getUsername());
-    accountUpdate.setSalt(account.salt != null ? account.salt : accountUpdate.getSalt());
-    accountUpdate.setVerifier(account.verifier != null ? account.verifier : accountUpdate.getVerifier());
-    accountRepository.save(accountUpdate);
+    @Override
+    public void save(AccountEntity account) {
+        accountRepository.save(account);
+    }
 
-    return accountUpdate.toDomainModel();
-  }
+    @Override
+    public Optional<AccountEntity> findByUsername(String username) {
+        return accountRepository.findByUsername(username);
+    }
 
+    @Override
+    public List<AccountEntity> findByAccountWebId(Long id) {
+        return accountRepository.findByAccountWebId(id);
+    }
+
+    @Override
+    public Optional<AccountEntity> findById(Long id) {
+        return accountRepository.findById(id);
+    }
+
+    @Override
+    public Optional<AccountEntity> findByIdAndAccountWeb(Long id, Long accountWebId, String transactionId) {
+        return accountRepository.findByIdAndAccountWebId(id, accountWebId);
+    }
 }

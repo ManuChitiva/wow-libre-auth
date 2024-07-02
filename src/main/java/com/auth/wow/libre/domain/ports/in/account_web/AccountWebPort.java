@@ -1,10 +1,12 @@
 package com.auth.wow.libre.domain.ports.in.account_web;
 
-import com.auth.wow.libre.domain.model.Account;
-import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
+import com.auth.wow.libre.domain.model.AccountWebModel;
+import com.auth.wow.libre.domain.model.RolModel;
 
 public interface AccountWebPort {
-  AccountWebEntity save(Account account, String transactionId);
 
-  void update(Account account, Long accountIdWeb, String transactionId);
+    AccountWebModel save(AccountWebModel accountWebModel, RolModel rol, String transactionId);
+
+    AccountWebModel findByEmail(String email, String transactionId);
+
 }

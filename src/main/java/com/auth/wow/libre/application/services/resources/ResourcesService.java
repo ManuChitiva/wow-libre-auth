@@ -1,6 +1,7 @@
 package com.auth.wow.libre.application.services.resources;
 
-import com.auth.wow.libre.domain.model.Country;
+import com.auth.wow.libre.domain.model.CountryModel;
+import com.auth.wow.libre.domain.model.FaqsModel;
 import com.auth.wow.libre.domain.ports.in.resources.ResourcesPort;
 import com.auth.wow.libre.domain.ports.out.resources.JsonLoaderPort;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,13 @@ public class ResourcesService implements ResourcesPort {
   }
 
   @Override
-  public List<Country> getCountry(String transactionId) {
+  public List<CountryModel> getCountry(String transactionId) {
     return jsonLoaderPort.getJsonCountry(transactionId);
   }
+
+  @Override
+  public List<FaqsModel> getFaqs(String transactionId) {
+    return jsonLoaderPort.getJsonFaqs(transactionId);
+  }
+
 }

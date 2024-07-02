@@ -1,50 +1,48 @@
 package com.auth.wow.libre.application.services.account_web;
 
-import com.auth.wow.libre.domain.model.Account;
-import com.auth.wow.libre.domain.model.exception.NotFoundException;
+import com.auth.wow.libre.domain.model.AccountWebModel;
+import com.auth.wow.libre.domain.model.RolModel;
 import com.auth.wow.libre.domain.ports.in.account_web.AccountWebPort;
-import com.auth.wow.libre.domain.ports.out.account_web.LoadAccountWebPort;
 import com.auth.wow.libre.domain.ports.out.account_web.ObtainAccountWebPort;
-import com.auth.wow.libre.domain.ports.out.account_web.UpdateAccountWebPort;
+import com.auth.wow.libre.domain.ports.out.account_web.SaveAccountWebPort;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
+import com.auth.wow.libre.infrastructure.entities.RolEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccountWebService implements AccountWebPort {
 
-  private final LoadAccountWebPort loadAccountWebPort;
-  private final UpdateAccountWebPort updateAccountWebPort;
-  private final ObtainAccountWebPort obtainAccountWebPort;
+    private final SaveAccountWebPort saveAccountWebPort;
+    private final ObtainAccountWebPort obtainAccountWebPort;
 
-  public AccountWebService(LoadAccountWebPort loadAccountWebPort, UpdateAccountWebPort updateAccountWebPort,
-                           ObtainAccountWebPort obtainAccountWebPort) {
-    this.loadAccountWebPort = loadAccountWebPort;
-    this.updateAccountWebPort = updateAccountWebPort;
-    this.obtainAccountWebPort = obtainAccountWebPort;
-  }
-
-  @Override
-  public AccountWebEntity save(Account account, String transactionId) {
-    return loadAccountWebPort.save(account);
-  }
-
-  @Override
-  public void update(Account account, Long accountIdWeb, String transactionId) {
-
-    AccountWebEntity accountWeb = obtainAccountWebPort.findById(accountIdWeb);
-
-    if (accountWeb == null) {
-      throw new NotFoundException("There is no web account available to update", transactionId);
+    public AccountWebService(SaveAccountWebPort saveAccountWebPort,
+                             ObtainAccountWebPort obtainAccountWebPort) {
+        this.saveAccountWebPort = saveAccountWebPort;
+        this.obtainAccountWebPort = obtainAccountWebPort;
     }
 
-    accountWeb.setCountry(account.country != null ? account.country : accountWeb.getCountry());
-    accountWeb.setFirstName(account.firstName != null ? account.firstName : accountWeb.getFirstName());
-    accountWeb.setLastName(account.lastName != null ? account.lastName : accountWeb.getLastName());
-    accountWeb.setPassword(account.password != null ? account.password : accountWeb.getPassword());
-    accountWeb.setDateOfBirth(account.dateOfBirth != null ? account.dateOfBirth : accountWeb.getDateOfBirth());
-    accountWeb.setCellPhone(account.cellPhone != null ? account.cellPhone : accountWeb.getCellPhone());
 
-    updateAccountWebPort.update(accountWeb);
-  }
+    @Override
+    public AccountWebModel save(AccountWebModel accountWebModel, RolModel rol, String transactionId) {
+
+        final AccountWebEntity accountWebEntity = AccountWebEntity.create(accountWebModel,
+                RolEntity.mapToAccountRolEntity(rol));
+
+        return mapToModel(saveAccountWebPort.save(accountWebEntity, transactionId));
+    }
+
+    @Override
+    public AccountWebModel findByEmail(String email, String transactionId) {
+        return obtainAccountWebPort.findByEmailAndStatusIsTrue(email).map(this::mapToModel).orElse(null);
+    }
+
+    private AccountWebModel mapToModel(AccountWebEntity accountWebEntity) {
+        return new AccountWebModel(accountWebEntity.getId(), accountWebEntity.getCountry(),
+                accountWebEntity.getDateOfBirth(),
+                accountWebEntity.getFirstName(), accountWebEntity.getLastName(), accountWebEntity.getCellPhone(),
+                accountWebEntity.getEmail(), accountWebEntity.getPassword(), accountWebEntity.getRolId().getId(),
+                accountWebEntity.getRolId().getName(), accountWebEntity.getStatus(), accountWebEntity.getVerified(),
+                accountWebEntity.getAvatarUrl());
+    }
 
 }

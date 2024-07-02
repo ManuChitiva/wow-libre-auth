@@ -1,4 +1,6 @@
 spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
   main:
       allow-circular-references: true
   jpa:
@@ -6,20 +8,23 @@ spring:
       ddl-auto: none
   datasource:
     url: jdbc:mysql://localhost:3306/auth
-    username: mschitiva68
+    username: root
     password: Loquendo96@
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: 'mschitiva68@gmail.com'
+    password: 'cwhv jqqb vpga mknn'
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 server:
   address: 0.0.0.0
   port: 8080
-springdoc:
-  api-docs:
-    path: /api-docs
-    enabled: true
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui-custom.html
-    operationsSorter: method
 application:
   security:
     jwt:

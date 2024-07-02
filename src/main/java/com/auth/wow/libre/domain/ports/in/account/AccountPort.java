@@ -1,13 +1,23 @@
 package com.auth.wow.libre.domain.ports.in.account;
 
-import com.auth.wow.libre.domain.model.UpdateAccount;
-import com.auth.wow.libre.domain.model.dto.AccountDetail;
-import com.auth.wow.libre.domain.model.dto.AccountDto;
+import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.security.JwtDto;
+
+import java.util.List;
 
 public interface AccountPort {
-  void create(AccountDto account, String transactionId);
+    JwtDto createWebAccount(AccountWebDto accountWebDto, String transactionId);
 
-  AccountDetail obtain(String username, String transactionId);
+    boolean isEmailExists(String email, String transactionId);
 
-  void updated(String username, UpdateAccount account, String transactionId);
+    List<AccountsDetailDto> availableAccounts(String email, String transactionId);
+
+    void createGameAccount(AccountGameDto accountGameDto, String email, String transactionId);
+
+    AccountDetailDto accountDetail(Long accountId, String email, String transactionId);
+
+    void changePasswordAccountGame(AccountChangePasswordDto accountChangePasswordDto, String email,
+                                   String transactionId);
+    boolean findByIdAndAccountWebId(Long id, Long accountWebId, String transactionId);
+
 }

@@ -1,0 +1,164 @@
+[
+  {
+    "value": "Estados Unidos",
+    "label": "Estados Unidos",
+    "language": "en",
+    "site": "us"
+  },
+  {
+    "value": "México",
+    "label": "México",
+    "language": "es",
+    "site": "mx"
+  },
+  {
+    "value": "Bahamas",
+    "label": "Bahamas",
+    "language": "en",
+    "site": "bs"
+  },
+  {
+    "value": "Cuba",
+    "label": "Cuba",
+    "language": "es",
+    "site": "cu"
+  },
+  {
+    "value": "Jamaica",
+    "label": "Jamaica",
+    "language": "en",
+    "site": "jm"
+  },
+  {
+    "value": "Haití",
+    "label": "Haití",
+    "language": "fr",
+    "site": "ht"
+  },
+  {
+    "value": "República Dominicana",
+    "label": "República Dominicana",
+    "language": "es",
+    "site": "do"
+  },
+  {
+    "value": "Guatemala",
+    "label": "Guatemala",
+    "language": "es",
+    "site": "gt"
+  },
+  {
+    "value": "Honduras",
+    "label": "Honduras",
+    "language": "es",
+    "site": "hn"
+  },
+  {
+    "value": "Nicaragua",
+    "label": "Nicaragua",
+    "language": "es",
+    "site": "ni"
+  },
+  {
+    "value": "Costa Rica",
+    "label": "Costa Rica",
+    "language": "es",
+    "site": "cr"
+  },
+  {
+    "value": "Panamá",
+    "label": "Panamá",
+    "language": "es",
+    "site": "pa"
+  },
+  {
+    "value": "Belice",
+    "label": "Belice",
+    "language": "en",
+    "site": "bz"
+  },
+  {
+    "value": "El Salvador",
+    "label": "El Salvador",
+    "language": "es",
+    "site": "sv"
+  },
+  {
+    "value": "Colombia",
+    "label": "Colombia",
+    "language": "es",
+    "site": "co"
+  },
+  {
+    "value": "Venezuela",
+    "label": "Venezuela",
+    "language": "es",
+    "site": "ve"
+  },
+  {
+    "value": "Guyana",
+    "label": "Guyana",
+    "language": "en",
+    "site": "gy"
+  },
+  {
+    "value": "Surinam",
+    "label": "Surinam",
+    "language": "en",
+    "site": "sr"
+  },
+  {
+    "value": "Guayana Francesa",
+    "label": "Guayana Francesa",
+    "language": "fr",
+    "site": "gf"
+  },
+  {
+    "value": "Brasil",
+    "label": "Brasil",
+    "language": "pt",
+    "site": "br"
+  },
+  {
+    "value": "Perú",
+    "label": "Perú",
+    "language": "es",
+    "site": "pe"
+  },
+  {
+    "value": "Bolivia",
+    "label": "Bolivia",
+    "language": "es",
+    "site": "bo"
+  },
+  {
+    "value": "Paraguay",
+    "label": "Paraguay",
+    "language": "es",
+    "site": "py"
+  },
+  {
+    "value": "Uruguay",
+    "label": "Uruguay",
+    "language": "es",
+    "site": "uy"
+  },
+  {
+    "value": "Argentina",
+    "label": "Argentina",
+    "language": "es",
+    "site": "ar"
+  },
+  {
+    "value": "Chile",
+    "label": "Chile",
+    "language": "es",
+    "site": "cl"
+  },
+  {
+    "value": "Ecuador",
+    "label": "Ecuador",
+    "language": "es",
+    "site": "ec"
+  }
+]

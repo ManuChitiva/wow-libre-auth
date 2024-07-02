@@ -1,6 +1,7 @@
 package com.auth.wow.libre.infrastructure.controller.external;
 
-import com.auth.wow.libre.domain.model.Country;
+import com.auth.wow.libre.domain.model.CountryModel;
+import com.auth.wow.libre.domain.model.FaqsModel;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
 import com.auth.wow.libre.domain.model.shared.GenericResponseBuilder;
 import com.auth.wow.libre.domain.ports.in.resources.ResourcesPort;
@@ -26,11 +27,21 @@ public class ResourcesController {
   }
 
   @GetMapping("/country")
-  public ResponseEntity<GenericResponse<List<Country>>> getCountry(
+  public ResponseEntity<GenericResponse<List<CountryModel>>> country(
           @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId) {
-    List<Country> countryList = resourcesPort.getCountry(transactionId);
+   final List<CountryModel> countryModelList = resourcesPort.getCountry(transactionId);
     return ResponseEntity
             .status(HttpStatus.OK)
-            .body(new GenericResponseBuilder<>(countryList, transactionId).ok().build());
+            .body(new GenericResponseBuilder<>(countryModelList, transactionId).ok().build());
   }
+
+    @GetMapping("/faqs")
+    public ResponseEntity<GenericResponse<List<FaqsModel>>> faqs(
+            @RequestHeader(name = HEADER_TRANSACTION_ID, required = false) final String transactionId) {
+        final List<FaqsModel> countryModelList = resourcesPort.getFaqs(transactionId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new GenericResponseBuilder<>(countryModelList, transactionId).ok().build());
+    }
+
 }
