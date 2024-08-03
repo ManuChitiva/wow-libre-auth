@@ -2,6 +2,7 @@ package com.auth.wow.libre.infrastructure.security;
 
 import com.auth.wow.libre.application.services.jwt.JwtPortService;
 import com.auth.wow.libre.domain.model.security.UserDetailsServiceCustom;
+import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
 import com.auth.wow.libre.infrastructure.filter.AuthenticationFilter;
 import com.auth.wow.libre.infrastructure.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +33,7 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsServiceCustom userDetailsServiceCustom;
-    private final JwtPortService jwtPort;
+    private final JwtPort jwtPort;
 
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
                                  UserDetailsServiceCustom userDetailsServiceCustom,
@@ -79,11 +80,11 @@ public class SecurityConfiguration {
                         request.requestMatchers(
                                         //INTERNAL API
                                         "/api/account/web/create",
-                                        "/api/account/search",
+                                        "/api/account/web/search",
                                         "/api/resources/country",
                                         "/api/resources/faqs",
                                         "/api/resources/benefit",
-                                        "/api/account/verify/{account_id}/{account_web_id}",
+                                        "/api/account/verify",
                                         //SWAGGER
                                         "/v2/api-docs", "/swagger-resources",
                                         "/swagger-resources/**", "/configuration/ui",

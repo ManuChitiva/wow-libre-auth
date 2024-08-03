@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANT_ACCOUNT_WEB_ID_JWT;
+import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_ACCOUNT_WEB_ID_JWT;
 import static com.auth.wow.libre.domain.model.constant.Constants.CONSTANT_ROL_JWT_PROP;
 
 @Component
@@ -46,7 +46,7 @@ public class JwtPortService implements JwtPort {
     public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put(CONSTANT_ROL_JWT_PROP, userDetails.getAuthorities());
-        extraClaims.put(CONSTANT_ACCOUNT_WEB_ID_JWT, userDetails.getAccountWebId());
+        extraClaims.put(HEADER_ACCOUNT_WEB_ID_JWT, userDetails.getAccountWebId());
 
         return generateToken(extraClaims, userDetails);
     }

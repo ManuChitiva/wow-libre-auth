@@ -4,6 +4,7 @@ import com.auth.wow.libre.application.services.jwt.JwtPortService;
 import com.auth.wow.libre.domain.model.constant.Constants;
 import com.auth.wow.libre.domain.model.exception.GenericErrorException;
 import com.auth.wow.libre.domain.model.shared.GenericResponse;
+import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -32,7 +33,7 @@ import static com.auth.wow.libre.domain.model.constant.Constants.HEADER_EMAIL_JW
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final com.auth.wow.libre.domain.ports.in.jwt.JwtPort jwtPort;
+    private final JwtPort jwtPort;
 
     public JwtAuthenticationFilter(JwtPortService jwtPort) {
         this.jwtPort = jwtPort;
@@ -82,12 +83,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setContentType(request.getContentType());
             response.getOutputStream().write(responseWrapper.getByteArray());
         } catch (GenericErrorException e) {
+            System.out.println(e.getClass());
+
             responseBody.setMessage(e.getMessage());
             responseBody.setTransactionId(e.transactionId);
             response.setStatus(e.httpStatus.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getOutputStream().write(new ObjectMapper().writeValueAsBytes(responseBody));
-        } catch ( ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {
             responseBody.setMessage("Invalid JWT, has expired");
             responseBody.setCode(401);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

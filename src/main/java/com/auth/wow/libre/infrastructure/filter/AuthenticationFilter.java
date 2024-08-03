@@ -1,11 +1,11 @@
 package com.auth.wow.libre.infrastructure.filter;
 
-import com.auth.wow.libre.application.services.jwt.JwtPortService;
 import com.auth.wow.libre.domain.model.constant.Constants;
 import com.auth.wow.libre.domain.model.exception.UnauthorizedException;
 import com.auth.wow.libre.domain.model.security.CustomUserDetails;
 import com.auth.wow.libre.domain.model.security.JwtDto;
 import com.auth.wow.libre.domain.model.security.UserModel;
+import com.auth.wow.libre.domain.ports.in.jwt.JwtPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,10 +30,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private static final String PATH_AUTHENTICATION_FILTER = "/api/auth/login";
     private final AuthenticationProvider authenticationProvider;
-    private final JwtPortService jwtPort;
+    private final JwtPort jwtPort;
 
     public AuthenticationFilter(AuthenticationProvider authenticationProvider,
-                                JwtPortService jwtPort) {
+                                JwtPort jwtPort) {
         this.authenticationProvider = authenticationProvider;
         this.jwtPort = jwtPort;
         setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(buildPattern(), "POST"));

@@ -1,24 +1,20 @@
 package com.auth.wow.libre.application.services.account;
 
-import com.auth.wow.libre.application.services.jwt.JwtPortService;
 import com.auth.wow.libre.domain.model.AccountWebModel;
-import com.auth.wow.libre.domain.model.RolModel;
-import com.auth.wow.libre.domain.model.comunication.MailSenderVars;
-import com.auth.wow.libre.domain.model.dto.*;
+import com.auth.wow.libre.domain.model.dto.AccountChangePasswordDto;
+import com.auth.wow.libre.domain.model.dto.AccountDetailDto;
+import com.auth.wow.libre.domain.model.dto.AccountGameDto;
+import com.auth.wow.libre.domain.model.dto.AccountsDetailDto;
 import com.auth.wow.libre.domain.model.enums.Expansion;
 import com.auth.wow.libre.domain.model.exception.FoundException;
 import com.auth.wow.libre.domain.model.exception.GenericErrorException;
 import com.auth.wow.libre.domain.model.exception.InternalException;
 import com.auth.wow.libre.domain.model.exception.NotFoundException;
-import com.auth.wow.libre.domain.model.security.CustomUserDetails;
-import com.auth.wow.libre.domain.model.security.JwtDto;
 import com.auth.wow.libre.domain.ports.in.account.AccountPort;
 import com.auth.wow.libre.domain.ports.in.account_banned.AccountBannedPort;
 import com.auth.wow.libre.domain.ports.in.account_web.AccountWebPort;
-import com.auth.wow.libre.domain.ports.in.rol.RolPort;
 import com.auth.wow.libre.domain.ports.out.account.ObtainAccountPort;
 import com.auth.wow.libre.domain.ports.out.account.SaveAccountPort;
-import com.auth.wow.libre.infrastructure.conf.comunication.EmailSend;
 import com.auth.wow.libre.infrastructure.entities.AccountEntity;
 import com.auth.wow.libre.infrastructure.entities.AccountWebEntity;
 import org.apache.commons.codec.DecoderException;
@@ -29,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,84 +33,21 @@ import java.util.stream.Collectors;
 public class AccountService implements AccountPort {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
     private static final int LIMIT_ACCOUNT = 10;
-    private static final String PICTURE_DEFAULT_PROFILE_WEB = "https://i.ibb.co/M8Kfq9X/icon-Default.png";
-    private static final String ROL_CLIENT_DEFAULT = "CLIENT";
-
-    private final JwtPortService jwtPort;
-    private final RolPort rolPort;
     private final AccountWebPort accountWebPort;
     private final ObtainAccountPort obtainAccountPort;
     private final SaveAccountPort saveAccountPort;
     private final AccountBannedPort accountBannedPort;
-
     private final PasswordEncoder passwordEncoder;
-    private final EmailSend emailSend;
 
 
-    public AccountService(AccountWebPort accountWebPort, PasswordEncoder passwordEncoder, JwtPortService jwtPort,
-                          RolPort rolPort, EmailSend emailSend, ObtainAccountPort obtainAccountPort,
+    public AccountService(AccountWebPort accountWebPort, PasswordEncoder passwordEncoder,
+                          ObtainAccountPort obtainAccountPort,
                           SaveAccountPort saveAccountPort, AccountBannedPort accountBannedPort) {
         this.accountWebPort = accountWebPort;
         this.passwordEncoder = passwordEncoder;
-        this.jwtPort = jwtPort;
-        this.rolPort = rolPort;
-        this.emailSend = emailSend;
         this.obtainAccountPort = obtainAccountPort;
         this.saveAccountPort = saveAccountPort;
         this.accountBannedPort = accountBannedPort;
-    }
-
-    @Override
-    public JwtDto createWebAccount(AccountWebDto accountWebDto, String transactionId) {
-
-        if (accountWebPort.findByEmail(accountWebDto.getEmail(), transactionId) != null) {
-            throw new FoundException("There is already a registered client with this data", transactionId);
-        }
-
-        final String passwordEncode = passwordEncoder.encode(accountWebDto.getPassword());
-
-        AccountWebModel accountWebModel = new AccountWebModel(accountWebDto.getCountry(),
-                accountWebDto.getDateOfBirth(), accountWebDto.getFirstName(), accountWebDto.getLastName(),
-                accountWebDto.getCellPhone(), accountWebDto.getEmail(), passwordEncode, true, false,
-                PICTURE_DEFAULT_PROFILE_WEB);
-
-        final RolModel rolModel = rolPort.findByName(ROL_CLIENT_DEFAULT, transactionId);
-
-        if (rolModel == null) {
-            LOGGER.error("An error occurred while assigning a role.  TransactionId: [{}]",
-                    transactionId);
-            throw new NotFoundException("An error occurred while assigning a role.", transactionId);
-        }
-
-        final Long id = accountWebPort.save(accountWebModel, rolModel, transactionId).id;
-
-        CustomUserDetails customUserDetails = new CustomUserDetails(
-                List.of(rolModel),
-                passwordEncode,
-                accountWebModel.email,
-                true,
-                true,
-                true,
-                true,
-                id,
-                PICTURE_DEFAULT_PROFILE_WEB
-        );
-
-        final String token = jwtPort.generateToken(customUserDetails);
-        final Date expiration = jwtPort.extractExpiration(token);
-        final String refreshToken = jwtPort.generateRefreshToken(customUserDetails);
-        final String email = accountWebDto.getEmail();
-
-        emailSend.sendHTMLEmail(email, "Bienvenido, Su cuenta ha sido creada exitosamente, " +
-                        "Por favor verifique su correo",
-                MailSenderVars.builder().email(email).transactionId(transactionId).build());
-
-        return new JwtDto(token, refreshToken, expiration, PICTURE_DEFAULT_PROFILE_WEB);
-    }
-
-    @Override
-    public boolean isEmailExists(String email, String transactionId) {
-        return Optional.ofNullable(accountWebPort.findByEmail(email, transactionId)).isPresent();
     }
 
     @Override
@@ -142,7 +74,7 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public void createGameAccount(AccountGameDto accountGameDto, String email, String transactionId) {
+    public void createGame(AccountGameDto accountGameDto, String email, String transactionId) {
 
         if (obtainAccountPort.findByUsername(accountGameDto.getUsername()).isPresent()) {
             throw new FoundException("There is already a registered client with this data", transactionId);
@@ -185,7 +117,7 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public AccountDetailDto accountDetail(Long accountId, String email, String transactionId) {
+    public AccountDetailDto detail(Long accountId, String email, String transactionId) {
         final AccountWebModel accountWebModel = getAccountWebModel(email, transactionId);
 
 
@@ -271,8 +203,8 @@ public class AccountService implements AccountPort {
     }
 
     @Override
-    public boolean findByIdAndAccountWebId(Long id, Long accountWebId, String transactionId) {
-        return obtainAccountPort.findByIdAndAccountWeb(id, accountWebId, transactionId).isPresent();
+    public boolean findByAccountIdAndAccountWebId(Long accountId, Long accountWebId, String transactionId) {
+        return obtainAccountPort.findByIdAndAccountWeb(accountId, accountWebId, transactionId).isPresent();
     }
 
 }
