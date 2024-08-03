@@ -3,6 +3,7 @@
 
 Bienvenido a WowLibre, una aplicación web diseñada para transformar la experiencia de los jugadores de World of Warcraft.
 
+![cuentas](https://github.com/user-attachments/assets/59f93882-7ed6-470a-a738-ea04f3cbffd1)
 
 Características Principales
 
